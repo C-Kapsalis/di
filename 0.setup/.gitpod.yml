@@ -1,0 +1,26 @@
+image:
+  file: Dockerfile
+
+#tasks:
+#  - name: Setup and Verify Environment
+#    command: |
+#      which google-chrome && google-chrome --version && chromedriver --version
+#      cd /workspace/my-cloud
+#      python het_scraper.py
+
+
+tasks:
+    - name: Install required packages & Open Jupyter Notebook
+      init: pip install -r requirements.txt
+      python -m nltk.downloader punkt
+      python -m nltk.downloader averaged_perceptron_tagger
+      python -m nltk.downloader wordnet
+      python -m nltk.downloader stopwords
+      command: echo "Setup complete"
+      command: gp open quickstart-demo.ipynb
+
+
+vscode:
+    extensions:
+        - ms-toolsai.jupyter
+        - ms-python.python

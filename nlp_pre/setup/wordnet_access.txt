@@ -1,0 +1,5 @@
+to access wordnet - 3.0 via the terminal, use "wn"
+
+
+### but we can actually access all of wordnet inside of nltk!!!
+# -> nltk.download('wordnet')

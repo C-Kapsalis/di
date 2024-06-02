@@ -1,0 +1,140 @@
+RegEx Terminology 
+
+1. Literal characters
+Characters that match themselves. 
+
+
+2. Metacharacters
+Special characters with a symbolic meaning. 
+Example: ., *, +, ?, \, (, ), [, ], {, }, ^, $, |
+e.g. b.x -> matches "b" followed by a single character (except for newline) followed by x/, 
+	like bax, box, bix, b?x
+e.g. a|b -> matches strings containing a or b (looks for a and then b in the order they're 
+	written, from left to right)
+e.g. \ -> escapes a special character (metacharacter) after this sign 
+e.g. * -> greedy quantifier; matches zero or more characters to its left - it should appear zero 
+	or more times -> F*m matches Fm, FFFFFFFFFm, Fam, F2315t2345324t2m
+e.g. + -> greedy quantifier; matches one or more chars to its left -> F+m matches FFm, FFFFm, FFFFFFFFm 
+	but not Fm, Fam, F1234213m, F1234Fm
+e.g. {n} -> non-negative, denotes exactly n repetitions -> Hel{2}o matches exactly Hello 
+e.g. {n,} -> non-negative, specifies an expression to its left for n or more times -> Xb{3,} matches Xbbb, Xbbbb, Xbbbbb, ... 
+e.g. {n,m} -> non-negative, defines a lower (n) and upper (m) bound for the number of repetitions
+e.g. () -> used to match everything in the simple bracket -> A(xy) matches exactly Axy 
+e.g. [] -> match ANY (at least one) char from the range of chars defined in the square bracket 
+					-> [abc] matches a or b or c, 
+					-> [pqr][xy] matches px, pqy, rxy, ...
+
+
+3. Character Classes
+Define a set of characters to match. 
+Examples: [aeiou], [0-9], [A-Za-z]
+Alphanumerical characters: a-z, A-Z, 0-9 
+e.g. \d -> any decimal digit (<=> [0-9])
+	 \D -> NON digits (<=> [^0-9])
+	 \w -> alphanumeric characters plus the underscore (but NOT the dash) (<=> [a-zA-Z0-9_])
+	 \W -> matches a NON alphanum char (<=> [^A-Za-z0-9_])
+	 \s -> matches one white-space character (<=> [\r\n\t\f\v  ], \r carriage return, 
+	 		\n newline char, \t horizontal tab, \f form feed, \v vertical tab)
+	 \S -> matches NON white-space chars (<=> [^\r\n\t\f\v	])
+	 \S+ -> matches at least one (so ONE OR MORE) non-whitespace chars
+	 \n -> matches a newline char 
+	 \b -> matches word boundary
+
+
+4. White Space 
+\t (tab), \n (new line), \r (return)
+
+
+5. Quantifiers 
+Specify the numbers of occurrences of a certain/single character or a group of characters. 
+Examples: *, +, ?, {n}, {n,}, {n,m}
+
+
+6. Anchors 
+Define the start or end of a line. 
+Examples: ^, $, \b 
+e.g. ^a -> matches all strings starting with 'a' 
+e.g. r$ -> matches all strings ending with 'r'
+
+-----------------------------------	  -----------------------------------	
+
+Python regular expression functions 
+re.match()  -  returns one string (first leftmost occurrence) matched using an expression [or None]
+re.search()  -  returns an object of the match when a pattern is found 
+		.span() returns a tuple containing the start-, and end positions of the match.
+		.string returns the string passed into the function
+		.group() returns the part of the string where there was a match
+
+re.findall()  -  returns a list of strings that match [or empty list, []]
+re.split()  -  divides a string based on matching with the regular expression
+re.sub()  -  replaces a matched string with another string 
+
+
+e.g. -> break a string into a list of characters (non-newline)
+a = re.findall('.', 'Hello. I am here.')
+
+-----------------------------------   -----------------------------------
+
+Metacharacters (except \) are NOT active inside classes - they are stripped of their special nature. 
+e.g. '[^5]' will match anything except a '5' character, while
+	 '[5^]' will match a '5' and/or a '^' character literal
+	 
+-----------------------------------   -----------------------------------
+
+Compilation Flags
+They let you modify some aspects of how regular expressions work. 
+In the `re` module, they are available under two names; a long one and a shorter one,
+which actually matches Perl's pattern modifiers (~ 'compilation flags' equivalents)
+
+Multiple flags can be specified by bitwise OR-ing them; re.I | re.M sets both the 
+I and M flags, for example. 
+
+e.g. re.compile(r'{regex_pattern}', re.{flag_name})
+
+- re.I or re.IGNORECASE: 
+perform case-insensitive matching 
+
+- re.L or re.LOCALE:
+make \w, \W, \b, \B and case-insensitive matching dependent on the current locale
+instead of the Unicode database 
+Locales are a feature of the C library intended to help in writing programs that take account of language differences. 
+
+- re.M or re.MULTILINE: 
+When this flag is specified, ^ matches at the beginning of the string and at the 
+beginning of each line within the string, immediately following each newline. 
+Similarly, the $ metacharacter matches either at the end of the string and at the 
+end of each line (immediately preceding each newline).
+
+- re.S or re.DOTALL: 
+Makes the '.' special character match any character INCLUDING a newline;
+
+- re.A or re.ASCII: 
+Make \w, \W, \b, \B, \s and \S perform ASCII-only matching instead of full Unicode matching.
+
+- re.X or re.VERBOSE: 
+Allows you more flexibility in how you can format regular expressions - whitespace inside the 
+RE's definition is ignored (except when it is in a character class or preceded by an 
+unescaped backslash). Also allows you to add comments 
+
+-----------------------------------	  -----------------------------------	
+
+More Metacharacters 
+
+\A
+Matches only at the start of the string. When not in MULTILINE mode, \A and ^ are 
+effectively the same. In MULTILINE mode, they’re different: \A still matches only at \the 
+beginning of the string, but ^ may match at any location inside the string that 
+follows a newline character.
+
+
+\Z
+Matches only at the end of the string.
+
+
+\b
+Word boundary.
+
+
+\B
+The opposite of \b, only matching when the current position is not at a word boundary.
+
